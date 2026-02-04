@@ -37,7 +37,6 @@
             overflow-x: hidden;
         }
 
-        /* Canvas for perspective grid */
         #grid-canvas {
             position: fixed;
             top: 0;
@@ -48,7 +47,6 @@
             pointer-events: none;
         }
 
-        /* Center mask - fades grid in the middle where content lives */
         .center-mask {
             position: fixed;
             top: 0;
@@ -65,7 +63,6 @@
             z-index: 1;
         }
 
-        /* Top fade for horizon blend */
         .horizon-fade {
             position: fixed;
             top: 0;
@@ -88,7 +85,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         header {
             margin-bottom: 3rem;
         }
@@ -114,7 +110,6 @@
             font-weight: 300;
         }
 
-        /* Navigation */
         nav {
             margin-bottom: 3rem;
             padding-top: 1.5rem;
@@ -141,7 +136,6 @@
             color: var(--blue);
         }
 
-        /* Main content */
         main {
             flex: 1;
         }
@@ -161,7 +155,6 @@
             margin-top: 1rem;
         }
 
-        /* Section titles */
         .section-title {
             font-size: 0.7rem;
             font-weight: 400;
@@ -171,7 +164,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Posts list */
         .posts {
             margin-bottom: 3rem;
         }
@@ -212,7 +204,6 @@
             font-weight: 300;
         }
 
-        /* Links section */
         .links {
             margin-bottom: 3rem;
         }
@@ -237,7 +228,6 @@
             color: var(--blue);
         }
 
-        /* Footer */
         footer {
             padding-top: 2rem;
             border-top: 1px solid rgba(95, 168, 211, 0.1);
@@ -250,7 +240,6 @@
             font-weight: 300;
         }
 
-        /* Subtle cursor blink for flair */
         .cursor {
             display: inline-block;
             width: 2px;
@@ -267,7 +256,6 @@
             51%, 100% { opacity: 0; }
         }
 
-        /* Desktop adjustments */
         @media (min-width: 640px) {
             .container {
                 padding: 5rem 2rem;
@@ -354,7 +342,7 @@
                     <span class="link-item"><a href="https://jamesbychance.substack.com" target="_blank" rel="noopener">substack</a></span>
                     <span class="link-item"><a href="https://instagram.com/jamesbychance" target="_blank" rel="noopener">instagram</a></span>
                     <span class="link-item"><a href="https://scholar.google.com" target="_blank" rel="noopener">scholar</a></span>
-                    <span class="link-item"><a href="/cdn-cgi/l/email-protection#6b03022b010a060e18091208030a05080e45080406">email</a></span>
+                    <span class="link-item"><a href="mailto:hi@jamesbychance.com">email</a></span>
                 </div>
             </section>
         </main>
@@ -364,7 +352,7 @@
         </footer>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Typewriter effect
         const typewriterEl = document.getElementById('typewriter');
         const phrases = ['James Eggleston', 'ML Research Fellow'];
@@ -374,8 +362,8 @@
         
         const typeSpeed = 80;
         const deleteSpeed = 50;
-        const pauseEnd = 2000;    // pause after typing complete
-        const pauseStart = 500;  // pause before typing new phrase
+        const pauseEnd = 2000;
+        const pauseStart = 500;
         
         function typewrite() {
             const currentPhrase = phrases[phraseIndex];
@@ -391,11 +379,9 @@
             let delay = isDeleting ? deleteSpeed : typeSpeed;
             
             if (!isDeleting && charIndex === currentPhrase.length) {
-                // Finished typing, pause then delete
                 delay = pauseEnd;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
-                // Finished deleting, move to next phrase
                 isDeleting = false;
                 phraseIndex = (phraseIndex + 1) % phrases.length;
                 delay = pauseStart;
@@ -410,7 +396,6 @@
         const canvas = document.getElementById('grid-canvas');
         const ctx = canvas.getContext('2d');
         
-        // Perspective settings
         let horizon, vanishingPointX;
         const gridDepth = 50;
         
@@ -421,29 +406,21 @@
             vanishingPointX = canvas.width * 0.5;
         }
         
-        // Project a 3D grid point to 2D screen space
         function project(gridX, gridZ) {
             const perspective = 800;
             const scale = perspective / (perspective + gridZ * 50);
-            
             const screenX = vanishingPointX + (gridX - vanishingPointX) * scale;
             const screenY = horizon + (canvas.height - horizon) * scale;
-            
             return { x: screenX, y: screenY, scale };
         }
         
         function drawGrid() {
-            // Draw lines going into the distance (horizontal grid lines)
             for (let z = 0; z < gridDepth; z++) {
                 const left = project(-canvas.width, z);
                 const right = project(canvas.width * 2, z);
-                
-                // Fade with distance
                 const distanceFade = 1 - z / gridDepth;
                 const alpha = 0.07 * distanceFade;
-                
                 if (alpha < 0.003) continue;
-                
                 ctx.strokeStyle = `rgba(95, 168, 211, ${alpha})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
@@ -452,16 +429,13 @@
                 ctx.stroke();
             }
             
-            // Draw vertical lines converging to vanishing point
             const numVerticals = 30;
             const spacing = canvas.width / 10;
             
             for (let i = -numVerticals; i <= numVerticals; i++) {
                 const baseX = vanishingPointX + i * spacing;
-                
                 const near = project(baseX, 0);
                 const far = project(baseX, gridDepth);
-                
                 ctx.strokeStyle = 'rgba(95, 168, 211, 0.05)';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
@@ -476,4 +450,13 @@
             drawGrid();
         }
         
-        window.addEventLis
+        window.addEventListener('resize', () => {
+            resize();
+            draw();
+        });
+        
+        resize();
+        draw();
+    </script>
+</body>
+</html>
