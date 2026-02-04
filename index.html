@@ -1,144 +1,446 @@
 <!DOCTYPE html>
-
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James Eggleston | Research Fellow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #08090c;
+            --blue: #5fa8d3;
+            --blue-dim: #3d7a9e;
+            --text: #b8c0ce;
+            --text-dim: #5a6270;
+            --text-bright: #e2e6ed;
+        }
 
-        <link href="styles.css" rel="stylesheet">
-        <script defer src="app.js"></script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        <title>jamesbychance.io</title>
-    </head>
-    <body class="bg-black">
-    <div>
-        <div class="container-fluid text-white">
-            <ul class="nav m-3">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="index.html">JAMES</a>
-                </li>
-                <li class="ms-auto nav-item">
-                    <a class="nav-link text-white" href="contact.html">CONTACT</a>
-                </li>
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Canvas for perspective grid */
+        #grid-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Center mask - fades grid in the middle where content lives */
+        .center-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse 55% 100% at 50% 50%,
+                var(--bg) 0%,
+                var(--bg) 60%,
+                transparent 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Top fade for horizon blend */
+        .horizon-fade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 3rem;
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-bright);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .handle {
+            font-size: 0.85rem;
+            color: var(--blue);
+            font-weight: 300;
+            margin-bottom: 0.25rem;
+        }
+
+        .title {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        nav {
+            margin-bottom: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(95, 168, 211, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--blue);
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+        }
+
+        .about {
+            margin-bottom: 3rem;
+        }
+
+        .about p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .about p + p {
+            margin-top: 1rem;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--text-dim);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        /* Posts list */
+        .posts {
+            margin-bottom: 3rem;
+        }
+
+        .post-list {
+            list-style: none;
+        }
+
+        .post-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(95, 168, 211, 0.05);
+        }
+
+        .post-item:first-child {
+            padding-top: 0;
+        }
+
+        .post-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        .post-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .post-link:hover .post-title {
+            color: var(--blue);
+        }
+
+        .post-date {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Links section */
+        .links {
+            margin-bottom: 3rem;
+        }
+
+        .link-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+        }
+
+        .link-item {
+            font-size: 0.8rem;
+        }
+
+        .link-item a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .link-item a:hover {
+            color: var(--blue);
+        }
+
+        /* Footer */
+        footer {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            margin-top: auto;
+        }
+
+        .footer-text {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Subtle cursor blink for flair */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--blue);
+            margin-left: 4px;
+            animation: blink 1.2s step-end infinite;
+            vertical-align: text-bottom;
+            opacity: 0.7;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 0.7; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Desktop adjustments */
+        @media (min-width: 640px) {
+            .container {
+                padding: 5rem 2rem;
+            }
+
+            .name {
+                font-size: 1.75rem;
+            }
+
+            header {
+                margin-bottom: 4rem;
+            }
+
+            nav {
+                margin-bottom: 4rem;
+            }
+
+            .about {
+                margin-bottom: 4rem;
+            }
+
+            .posts {
+                margin-bottom: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="grid-canvas"></canvas>
+    <div class="center-mask"></div>
+    <div class="horizon-fade"></div>
+    
+    <div class="container">
+        <header>
+            <h1 class="name">James Eggleston<span class="cursor"></span></h1>
+            <p class="handle">@jamesbychance</p>
+            <p class="title">ML Research Fellow</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#about">about</a></li>
+                <li><a href="https://jamesbychance.substack.com/">blog</a></li>
+                <li><a href="#publications">publications</a></li>
+                <li><a href="#cv">cv</a></li>
             </ul>
-        </div>
-        <div class="container text-white">
-            <section class="hidden">
-            <div class="row align-items-center" style="min-height: 50vh">
-                <div class="col-sm m-3">
-                    <h1 class="display-1 fw-bolder my-0">DR</h1>
-                    <h1 class="display-1 fw-bolder my-0">JAMES</h1>
-                    <h1 class="display-1 fw-bolder my-0">EGGLESTON</h1>
-                    <h1 class="display-1 fw-bolder text-dark my-0">SOFTWARE ENGINEER</h4>
-                </div>
-            </div>
-            </section>
-            <section class="hidden">
-                <div class="logos hidden">
-            <div class="row">
-                <div class="col-sm-6 m-3">
-                    <h5>I AM A SOFTWARE ENGINEER WHO BRINGS FRESH IDEAS FOR HUMAN-COMPUTER INTERACTION.</h5>
-                    <h5>I BLEND THE COMPLEMENTARY FIELDS OF BEHAVIOURAL SCIENCE & DATA SCIENCE.</h5>
-                    <h5>I DO:</h5>
-                    <h5>+ DATA STRUCTURES</h5>
-                    <h5>+ ALGORITHMS</h5>
-                    <h5>+ AI AND ML APPLICATIONS</h5>
-                </div>
-            </div>
-            </div>
+        </nav>
+
+        <main>
+            <section class="about" id="about">
+                <p><strong>Research fellow working on machine learning.</strong> Interested in distributed intelligence and algorithmic efficiency — building systems that solve complex architectural challenges at scale.</p>
+                <p>Previously at Government, CUSP, powerledger and HISmelt. Based by the Indian Ocean.</p>
             </section>
 
-        </div>
+            <section class="posts" id="blog">
+                <h2 class="section-title">Latest</h2>
+                <ul class="post-list">
+                    <li class="post-item">
+                        <a href="#" class="post-link">
+                            <h3 class="post-title"><strong>Practice:</strong> 12 games, 2 players, 1 winner</h3>
+                            <span class="post-date">2026.03</span>
+                        </a>
+                    </li>
+                    <li class="post-item">
+                        <a href="#" class="post-link">
+                            <h3 class="post-title"><strong>Reading:</strong> Training AI without sharing data</h3>
+                            <span class="post-date">2026.02</span>
+                        </a>
+                    </li>
+                    <li class="post-item">
+                        <a href="#" class="post-link">
+                            <h3 class="post-title"><strong>Theory:</strong> All outcomes exist but some weigh more</h3>
+                            <span class="post-date">2026.01</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
 
-
-        <!-- GAP SPACER -->
-        <div class="row" style="min-height: 30vh"></div>
-
-
-    </div>
-    <!-- START OF WHITE BACKGROUND -->
-    <section class="hidden">
-    <div class="bg-white">
-        <!-- GAP SPACER -->
-        <div class="row" style="min-height: 10vh"></div>
-        <div class="container text-black">
-            <div class="row align-items-center" style="min-height: 30vh">
-                <div class="col-md m-3">
-                    <h1 class="display-1 fw-bolder my-0">TECHNOLOGY +</h1>
-                    <h1 class="display-1 fw-bolder text-dark my-0">PEOPLE</h4>
+            <section class="links">
+                <h2 class="section-title">Links</h2>
+                <div class="link-list">
+                    <span class="link-item"><a href="https://github.com/jamesbychance" target="_blank" rel="noopener">github</a></span>
+                    <span class="link-item"><a href="https://twitter.com/jamesbychance" target="_blank" rel="noopener">twitter</a></span>
+                    <span class="link-item"><a href="https://jamesbychance.substack.com" target="_blank" rel="noopener">substack</a></span>
+                    <span class="link-item"><a href="https://instagram.com/jamesbychance" target="_blank" rel="noopener">instagram</a></span>
+                    <span class="link-item"><a href="https://scholar.google.com" target="_blank" rel="noopener">scholar</a></span>
+                    <span class="link-item"><a href="mailto:hi@jamesbychance.com">email</a></span>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-7 m-3">
-                    <h5>WHEN SUCCEEDING IN MAKING A PARADIGM SHIFT IN THE CURRENT SET OF TECHNOLOGIES, IT CAN SEEM MAGICAL.</h5>
-                    <h5>THIS IS OFTEN THE CASE WITH BLENDING COMPUTING AND COMMUNICATIONS ORIENTED TO THE CONSUMER.</h5>
-                    <h5>ACHIEVED WHEN COMPLEXITY HAS BEEN INTEGRATED AND SIMPLIFIED INTO AN EXPERIENCE ANYONE CAN ENJOY AND SHARE.</h5>
-                </div>
-            </div>
-            <!-- GAP SPACER -->
-            <div class="row" style="min-height: 50vh"></div>
-        </div>
-    </div>
+            </section>
+        </main>
 
-    </section>
-    <section class="hidden">
-
-    <!-- START OF BLACK BACKGROUND -->
-    <div class="bg-black">
-        <!-- GAP SPACER -->
-        <div class="row" style="min-height: 10vh"></div>
-        <div class="container text-white">
-            <div class="row align-items-center" style="min-height: 40vh">
-                <div class="col-sm m-3">
-                    <h1 class="display-1 fw-bolder my-0">EFFECT</h1>
-                    <h1 class="display-1 fw-bolder text-dark my-0">THE</h1>
-                    <h1 class="display-1 fw-bolder my-0">FUTURE</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-7 m-3">
-                    <h5>MY MISSION IS TO CREATE VALUABLE AND REWARDING EXPERIENCES FOR CONSUMERS BEYOND ANY MEANS THAT WAS KNOWN BEFORE.</h5>
-                </div>
-            </div>
-            <!-- GAP SPACER -->
-            <div class="row" style="min-height: 50vh"></div>
-        </div>
+        <footer>
+            <p class="footer-text">© 2026 James Eggleston</p>
+        </footer>
     </div>
 
-    </section>
-    <section class="hidden">
-
-    <!-- START OF WHITE BACKGROUND -->
-    <div class="bg-white">
-        <div class="container text-black text-center">
-            <div class="row align-items-center" style="min-height: 30vh">
-                <div class="col-sm m-3">
-                    <h1 class="fw-bolder my-0">LET'S HAVE A TALK ABOUT YOUR FUTURE</h1>
-                    <h1 class="display-1 fw-bolder text-dark my-0"></h1>
-                    <h1 class="display-1 fw-bolder my-0"></h4>
-                </div>
-            </div>
-            <div class="row align-items-center" style="min-height: 40vh">
-                <div class="col-sm m-3">
-                    <a href="contact.html" class="btn btn-outline-dark btn-hover" role="button">CONTACT ME</a>
-                </div>
-            </div>
-            <!-- GAP SPACER -->
-            <div class="row" style="min-height: 20vh"></div>
-
-            <div class="row">
-                <div class="col-sm m-3">
-                    <h6>jamesbychance.github.io</h6>
-                    <h6>INDIAN OCEAN</h6>
-                    <h6>©2023</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </section>
-
-    </body>
+    <script>
+        const canvas = document.getElementById('grid-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Perspective settings
+        let horizon, vanishingPointX;
+        const gridDepth = 50;
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            horizon = canvas.height * 0.35;
+            vanishingPointX = canvas.width * 0.5;
+        }
+        
+        // Project a 3D grid point to 2D screen space
+        function project(gridX, gridZ) {
+            const perspective = 800;
+            const scale = perspective / (perspective + gridZ * 50);
+            
+            const screenX = vanishingPointX + (gridX - vanishingPointX) * scale;
+            const screenY = horizon + (canvas.height - horizon) * scale;
+            
+            return { x: screenX, y: screenY, scale };
+        }
+        
+        function drawGrid() {
+            // Draw lines going into the distance (horizontal grid lines)
+            for (let z = 0; z < gridDepth; z++) {
+                const left = project(-canvas.width, z);
+                const right = project(canvas.width * 2, z);
+                
+                // Fade with distance
+                const distanceFade = 1 - z / gridDepth;
+                const alpha = 0.07 * distanceFade;
+                
+                if (alpha < 0.003) continue;
+                
+                ctx.strokeStyle = `rgba(95, 168, 211, ${alpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(left.x, left.y);
+                ctx.lineTo(right.x, right.y);
+                ctx.stroke();
+            }
+            
+            // Draw vertical lines converging to vanishing point
+            const numVerticals = 30;
+            const spacing = canvas.width / 10;
+            
+            for (let i = -numVerticals; i <= numVerticals; i++) {
+                const baseX = vanishingPointX + i * spacing;
+                
+                const near = project(baseX, 0);
+                const far = project(baseX, gridDepth);
+                
+                ctx.strokeStyle = 'rgba(95, 168, 211, 0.05)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(near.x, near.y);
+                ctx.lineTo(far.x, far.y);
+                ctx.stroke();
+            }
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+        }
+        
+        window.addEventListener('resize', () => {
+            resize();
+            draw();
+        });
+        
+        resize();
+        draw();
+    </script>
+</body>
 </html>
