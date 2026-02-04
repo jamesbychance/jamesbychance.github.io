@@ -302,7 +302,7 @@
     
     <div class="container">
         <header>
-            <h1 class="name">James Eggleston<span class="cursor"></span></h1>
+            <h1 class="name"><span id="typewriter"></span><span class="cursor"></span></h1>
             <p class="handle">@jamesbychance</p>
             <p class="title">ML Research Fellow</p>
         </header>
@@ -318,7 +318,7 @@
 
         <main>
             <section class="about" id="about">
-                <p><strong>Research fellow working on machine learning.</strong> Interested in distributed intelligence and algorithmic efficiency — building systems that solve complex architectural challenges at scale.</p>
+                <p>Research fellow working on machine learning. Interested in <strong>distributed intelligence and algorithmic efficiency</strong> — building systems that <strong>solve complex architectural challenges at scale.</strong></p>
                 <p>Previously at Government, CUSP, powerledger and HISmelt. Based by the Indian Ocean.</p>
             </section>
 
@@ -327,20 +327,20 @@
                 <ul class="post-list">
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Practice:</strong> 12 games, 2 players, 1 winner</h3>
-                            <span class="post-date">2026.03</span>
+                            <h3 class="post-title">Practice: 12 games, 2 players, 1 winner</h3>
+                            <span class="post-date">2026.01</span>
                         </a>
                     </li>
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Reading:</strong> Training AI without sharing data</h3>
+                            <h3 class="post-title">Reading: Training AI without sharing data</h3>
                             <span class="post-date">2026.02</span>
                         </a>
                     </li>
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Theory:</strong> All outcomes exist but some weigh more</h3>
-                            <span class="post-date">2026.01</span>
+                            <h3 class="post-title">Theory: All outcomes exist but some weigh more</h3>
+                            <span class="post-date">2025.09</span>
                         </a>
                     </li>
                 </ul>
@@ -354,7 +354,7 @@
                     <span class="link-item"><a href="https://jamesbychance.substack.com" target="_blank" rel="noopener">substack</a></span>
                     <span class="link-item"><a href="https://instagram.com/jamesbychance" target="_blank" rel="noopener">instagram</a></span>
                     <span class="link-item"><a href="https://scholar.google.com" target="_blank" rel="noopener">scholar</a></span>
-                    <span class="link-item"><a href="mailto:hi@jamesbychance.com">email</a></span>
+                    <span class="link-item"><a href="/cdn-cgi/l/email-protection#6b03022b010a060e18091208030a05080e45080406">email</a></span>
                 </div>
             </section>
         </main>
@@ -364,7 +364,49 @@
         </footer>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Typewriter effect
+        const typewriterEl = document.getElementById('typewriter');
+        const phrases = ['James Eggleston', 'ML Research Fellow'];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        
+        const typeSpeed = 80;
+        const deleteSpeed = 50;
+        const pauseEnd = 2000;    // pause after typing complete
+        const pauseStart = 500;  // pause before typing new phrase
+        
+        function typewrite() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            let delay = isDeleting ? deleteSpeed : typeSpeed;
+            
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                // Finished typing, pause then delete
+                delay = pauseEnd;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                // Finished deleting, move to next phrase
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                delay = pauseStart;
+            }
+            
+            setTimeout(typewrite, delay);
+        }
+        
+        typewrite();
+
+        // Grid canvas
         const canvas = document.getElementById('grid-canvas');
         const ctx = canvas.getContext('2d');
         
@@ -434,13 +476,4 @@
             drawGrid();
         }
         
-        window.addEventListener('resize', () => {
-            resize();
-            draw();
-        });
-        
-        resize();
-        draw();
-    </script>
-</body>
-</html>
+        window.addEventLis
