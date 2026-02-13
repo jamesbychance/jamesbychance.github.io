@@ -10,8 +10,8 @@
     <style>
         :root {
             --bg: #08090c;
-            --blue: #5fa8d3;
-            --blue-dim: #3d7a9e;
+            --pink: #ff2a6d;
+            --cyan: #05d9e8;
             --text: #b8c0ce;
             --text-dim: #5a6270;
             --text-bright: #e2e6ed;
@@ -77,7 +77,7 @@
         .container {
             position: relative;
             z-index: 10;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             padding: 3rem 1.5rem;
             min-height: 100vh;
@@ -86,7 +86,23 @@
         }
 
         header {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .ascii-art {
+            font-size: 0.45rem;
+            line-height: 1.0;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            white-space: pre;
+            background: linear-gradient(90deg, var(--cyan) 0%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            overflow: hidden;
+            width: 100%;
+            display: block;
+            transform-origin: left center;
         }
 
         .name {
@@ -97,23 +113,32 @@
             margin-bottom: 0.5rem;
         }
 
-        .handle {
-            font-size: 0.85rem;
-            color: var(--blue);
-            font-weight: 300;
-            margin-bottom: 0.25rem;
-        }
-
         .title {
             font-size: 0.85rem;
             color: var(--text-dim);
             font-weight: 300;
         }
 
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--pink);
+            margin-left: 4px;
+            animation: blink 1.2s step-end infinite;
+            vertical-align: text-bottom;
+            opacity: 0.9;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 0.9; }
+            51%, 100% { opacity: 0; }
+        }
+
         nav {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             padding-top: 1.5rem;
-            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            border-top: 1px solid rgba(5, 217, 232, 0.15);
         }
 
         nav ul {
@@ -133,32 +158,17 @@
         }
 
         nav a:hover {
-            color: var(--blue);
+            color: var(--cyan);
         }
 
         main {
             flex: 1;
         }
 
-        .about {
-            margin-bottom: 3rem;
-        }
-
-        .about p {
-            font-size: 0.95rem;
-            font-weight: 300;
-            line-height: 1.8;
-            color: var(--text);
-        }
-
-        .about p + p {
-            margin-top: 1rem;
-        }
-
         .section-title {
             font-size: 0.7rem;
             font-weight: 400;
-            color: var(--text-dim);
+            color: var(--pink);
             letter-spacing: 0.15em;
             text-transform: uppercase;
             margin-bottom: 1rem;
@@ -173,8 +183,8 @@
         }
 
         .post-item {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(95, 168, 211, 0.05);
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 42, 109, 0.08);
         }
 
         .post-item:first-child {
@@ -183,25 +193,40 @@
 
         .post-link {
             text-decoration: none;
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
         }
 
         .post-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 400;
             color: var(--text);
-            margin-bottom: 0.25rem;
             transition: color 0.3s ease;
         }
 
+        .post-title strong {
+            color: var(--cyan);
+        }
+
+        .post-item:nth-child(2) .post-title strong {
+            color: var(--pink);
+        }
+
+        .post-item:nth-child(3) .post-title strong {
+            color: #a855f7;
+        }
+
         .post-link:hover .post-title {
-            color: var(--blue);
+            color: var(--text-bright);
         }
 
         .post-date {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
             font-weight: 300;
+            flex-shrink: 0;
         }
 
         .links {
@@ -211,7 +236,7 @@
         .link-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem 1.5rem;
+            gap: 0.75rem 1.25rem;
         }
 
         .link-item {
@@ -225,12 +250,12 @@
         }
 
         .link-item a:hover {
-            color: var(--blue);
+            color: var(--pink);
         }
 
         footer {
             padding-top: 2rem;
-            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            border-top: 1px solid rgba(5, 217, 232, 0.1);
             margin-top: auto;
         }
 
@@ -240,25 +265,13 @@
             font-weight: 300;
         }
 
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1em;
-            background: var(--blue);
-            margin-left: 4px;
-            animation: blink 1.2s step-end infinite;
-            vertical-align: text-bottom;
-            opacity: 0.7;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 0.7; }
-            51%, 100% { opacity: 0; }
-        }
-
         @media (min-width: 640px) {
             .container {
-                padding: 5rem 2rem;
+                padding: 4rem 2rem;
+            }
+
+            .ascii-art {
+                font-size: 0.6rem;
             }
 
             .name {
@@ -266,19 +279,11 @@
             }
 
             header {
-                margin-bottom: 4rem;
+                margin-bottom: 3rem;
             }
 
             nav {
-                margin-bottom: 4rem;
-            }
-
-            .about {
-                margin-bottom: 4rem;
-            }
-
-            .posts {
-                margin-bottom: 4rem;
+                margin-bottom: 3rem;
             }
         }
     </style>
@@ -290,6 +295,28 @@
     
     <div class="container">
         <header>
+            <div class="ascii-art">                                        ░░░░
+                                     ░░▒▒▒▒▒▒░░
+                                   ░▒▒▓▓▓▓▓▓▒▒░
+                                 ░▒▓▓████████▓▓▒░
+                                ░▒▓██████████████▒░
+                               ░▓████████████████▓░
+                              ░▓██████████████████▓░
+                             ░▓████████████████████▓░
+                            ░▓██████████████████████▓░
+                           ░▓████████████████████████▓░
+                          ░▓██████████████████████████▓░
+                         ░▓████████████████████████████▓░
+                        ░▒████████████████████████████████▒░
+                       ░▒██████████████████████████████████▒░
+                      ░▒████████████████████████████████████▒░
+                     ░▒██████████████████████████████████████▒░
+                   ░░▒████████████████████████████████████████▒░░
+                 ░░▒▒██████████████████████████████████████████▒▒░░
+              ░░▒▒▓▓████████████████████████████████████████████▓▓▒▒░░
+          ░░▒▒▓▓████████████████████████████████████████████████████▓▓▒▒░░
+      ░░▒▒▓▓████████████████████████████████████████████████████████████▓▓▒▒░░
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
             <h1 class="name"><span id="typewriter"></span><span class="cursor"></span></h1>
             <p class="title">Machine Learning Engineer</p>
         </header>
@@ -302,25 +329,23 @@
         </nav>
 
         <main>
-
             <section class="posts" id="blog">
-                <h2 class="section-title">Latest</h2>
                 <ul class="post-list">
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Practice:</strong> 12 games, 2 players, 1 winner</h3>
+                            <span class="post-title"><strong>Practice:</strong> 12 games, 2 players, 1 winner</span>
                             <span class="post-date">2026.01</span>
                         </a>
                     </li>
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Reading:</strong> Training AI without sharing data</h3>
+                            <span class="post-title"><strong>Reading:</strong> Training AI without sharing data</span>
                             <span class="post-date">2026.02</span>
                         </a>
                     </li>
                     <li class="post-item">
                         <a href="#" class="post-link">
-                            <h3 class="post-title"><strong>Theory:</strong> All outcomes exist but some weigh more</h3>
+                            <span class="post-title"><strong>Theory:</strong> All outcomes exist but some weigh more</span>
                             <span class="post-date">2025.09</span>
                         </a>
                     </li>
@@ -328,7 +353,6 @@
             </section>
 
             <section class="links">
-                <h2 class="section-title">Links</h2>
                 <div class="link-list">
                     <span class="link-item"><a href="https://github.com/jamesbychance" target="_blank" rel="noopener">github</a></span>
                     <span class="link-item"><a href="https://twitter.com/jamesbychance" target="_blank" rel="noopener">twitter</a></span>
@@ -346,6 +370,26 @@
     </div>
 
     <script>
+        // Scale ASCII art to fit container
+        function scaleAsciiArt() {
+            const ascii = document.querySelector('.ascii-art');
+            const container = document.querySelector('.container');
+            if (!ascii || !container) return;
+            
+            // Reset scale to measure natural width
+            ascii.style.transform = 'scaleX(1)';
+            const asciiWidth = ascii.scrollWidth;
+            const containerWidth = container.clientWidth - 48; // account for padding
+            
+            if (asciiWidth > 0) {
+                const scale = containerWidth / asciiWidth;
+                ascii.style.transform = `scaleX(${scale})`;
+            }
+        }
+        
+        window.addEventListener('load', scaleAsciiArt);
+        window.addEventListener('resize', scaleAsciiArt);
+
         // Typewriter effect
         const typewriterEl = document.getElementById('typewriter');
         const phrases = ['James Eggleston, PhD.', '@jamesbychance'];
@@ -414,7 +458,11 @@
                 const distanceFade = 1 - z / gridDepth;
                 const alpha = 0.12 * distanceFade;
                 if (alpha < 0.003) continue;
-                ctx.strokeStyle = `rgba(95, 168, 211, ${alpha})`;
+                // Gradient from cyan to pink
+                const gradient = ctx.createLinearGradient(left.x, 0, right.x, 0);
+                gradient.addColorStop(0, `rgba(5, 217, 232, ${alpha})`);
+                gradient.addColorStop(1, `rgba(255, 42, 109, ${alpha})`);
+                ctx.strokeStyle = gradient;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(left.x, left.y);
@@ -429,7 +477,10 @@
                 const baseX = vanishingPointX + i * spacing;
                 const near = project(baseX, 0);
                 const far = project(baseX, gridDepth);
-                ctx.strokeStyle = 'rgba(95, 168, 211, 0.10)';
+                const gradient = ctx.createLinearGradient(0, near.y, 0, far.y);
+                gradient.addColorStop(0, 'rgba(255, 42, 109, 0.10)');
+                gradient.addColorStop(1, 'rgba(5, 217, 232, 0.04)');
+                ctx.strokeStyle = gradient;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(near.x, near.y);
