@@ -412,7 +412,7 @@
                 const left = project(-canvas.width, z);
                 const right = project(canvas.width * 2, z);
                 const distanceFade = 1 - z / gridDepth;
-                const alpha = 0.07 * distanceFade;
+                const alpha = 0.12 * distanceFade;
                 if (alpha < 0.003) continue;
                 ctx.strokeStyle = `rgba(95, 168, 211, ${alpha})`;
                 ctx.lineWidth = 1;
@@ -429,7 +429,7 @@
                 const baseX = vanishingPointX + i * spacing;
                 const near = project(baseX, 0);
                 const far = project(baseX, gridDepth);
-                ctx.strokeStyle = 'rgba(95, 168, 211, 0.05)';
+                ctx.strokeStyle = 'rgba(95, 168, 211, 0.10)';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(near.x, near.y);
